@@ -41,7 +41,7 @@ class TrainingParameters:
     POLICY_COEF = 1
     VALID_COEF = 0.5
     N_EPOCHS = 10
-    N_ENVS = 32 # number of processes
+    N_ENVS = 16 # number of processes  # original: 32
     N_MAX_STEPS = 7e7  # maximum number of time steps used in training
     N_STEPS = 2 ** 8  # number of time steps per process per data collection
     MINIBATCH_SIZE =int(2**9)
@@ -71,10 +71,10 @@ class SetupParameters:
 class RecordingParameters:
     RETRAIN = False
     WANDB = True
-    ENTITY = 'your_name'
+    ENTITY = 'czimbermark'
     TIME = datetime.datetime.now().strftime('%d-%m-%y%H%M')
-    EXPERIMENT_PROJECT = 'MAPF'
-    EXPERIMENT_NAME = 'LNS2+RL'
+    EXPERIMENT_PROJECT = 'LNS2+RL'
+    EXPERIMENT_NAME = 'sztaki-train'
     EXPERIMENT_NOTE = ''
     SAVE_INTERVAL = TrainingParameters.N_ENVS * TrainingParameters.N_STEPS*400  # interval of saving model
     PRINT_INTERVAL=5e4

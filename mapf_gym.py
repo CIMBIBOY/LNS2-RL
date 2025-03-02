@@ -10,6 +10,13 @@ from alg_parameters import *
 from dynamic_state import DyState
 opposite_actions = {0: -1, 1: 3, 2: 4, 3: 1, 4: 2, 5: 7, 6: 8, 7: 5, 8: 6}
 
+" CIMBIBOY includes"
+import os
+import datetime
+import imageio
+from PIL import Image
+import matplotlib.colors as mcolors
+" 2025 mar 2."
 
 class CL_MAPFEnv(gym.Env):
     """map MAPF problems to a standard RL environment"""

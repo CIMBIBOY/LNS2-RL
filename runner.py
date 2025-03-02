@@ -273,7 +273,7 @@ class Runner(object):
         mb_hidden_state = np.stack(mb_hidden_state)
         return mb_obs, mb_vector, mb_actions, mb_hidden_state
 
-@ray.remote(num_cpus=1, num_gpus=SetupParameters.NUM_GPU / (TrainingParameters.N_ENVS + 1))
+@ray.remote(num_cpus=0.5, num_gpus=SetupParameters.NUM_GPU / (TrainingParameters.N_ENVS + 1))
 class RLRunner(Runner):
     def __init__(self, meta_agent_id):
         super().__init__(meta_agent_id)
