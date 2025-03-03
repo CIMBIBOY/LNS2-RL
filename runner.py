@@ -176,7 +176,7 @@ class Runner(object):
         return rewards, next_valid_actions, obs, vector, train_valid, done, num_on_goal
 
 
-@ray.remote(num_cpus=1, num_gpus=SetupParameters.NUM_GPU / (TrainingParameters.N_ENVS + 1))
+@ray.remote(num_cpus=0.5, num_gpus=SetupParameters.NUM_GPU / (TrainingParameters.N_ENVS + 1))
 class RLRunner(Runner):
     def __init__(self, meta_agent_id):
         super().__init__(meta_agent_id)

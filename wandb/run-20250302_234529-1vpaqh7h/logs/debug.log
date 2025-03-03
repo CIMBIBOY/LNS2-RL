@@ -1,0 +1,34 @@
+2025-03-02 23:45:29,454 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Current SDK version is 0.16.1
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Configure stats pid to 534635
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Loading settings from /home/ubuntu/.config/wandb/settings
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Loading settings from /home/ubuntu/LNS2-RL/wandb/settings
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'driver.py', 'program_abspath': '/home/ubuntu/LNS2-RL/driver.py', 'program': '/home/ubuntu/LNS2-RL/driver.py'}
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_init.py:_log_setup():524] Logging user logs to /home/ubuntu/LNS2-RL/wandb/run-20250302_234529-1vpaqh7h/logs/debug.log
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_init.py:_log_setup():525] Logging internal logs to /home/ubuntu/LNS2-RL/wandb/run-20250302_234529-1vpaqh7h/logs/debug-internal.log
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_init.py:init():564] calling init triggers
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_init.py:init():571] wandb.init called with sweep_config: {}
+config: {'LOCAL_N_AGENTS': 8, 'GLOBAL_N_AGENT': (0.6, 0.65, 0.7), 'N_ACTIONS': 5, 'EPISODE_LEN': [356, 356, 356], 'FOV_SIZE': 9, 'WORLD_SIZE': [10, 25, 50], 'OBSTACLE_PROB': (0.15, 0.175, 0.2), 'ACTION_COST': -0.6, 'IDLE_COST': -0.6, 'GOAL_REWARD': 0.0, 'AG_COLLISION_COST': -1.5, 'DY_COLLISION_COST': -1.5, 'NUM_TIME_SLICE': 9, 'lr': 1e-05, 'GAMMA': 0.95, 'LAM': 0.95, 'CLIPRANGE': 0.2, 'MAX_GRAD_NORM': 50, 'ENTROPY_COEF': 0.01, 'VALUE_COEF': 0.5, 'POLICY_COEF': 1, 'VALID_COEF': 0.5, 'N_EPOCHS': 10, 'N_ENVS': 32, 'N_MAX_STEPS': 70000000.0, 'N_STEPS': 256, 'MINIBATCH_SIZE': 512, 'NET_SIZE': 512, 'NUM_CHANNEL': 31, 'GOAL_REPR_SIZE': 32, 'VECTOR_LEN': 8, 'SEED': 1234, 'USE_GPU_LOCAL': False, 'USE_GPU_GLOBAL': True, 'NUM_GPU': 1, 'RETRAIN': False, 'WANDB': True, 'ENTITY': 'czimbermark', 'TIME': '02-03-252345', 'EXPERIMENT_PROJECT': 'LNS2+RL', 'EXPERIMENT_NAME': 'sztaki-train', 'EXPERIMENT_NOTE': '', 'SAVE_INTERVAL': 1638400, 'MODEL_PATH': './models/LNS2+RL/sztaki-train02-03-252345'}
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_init.py:init():614] starting backend
+2025-03-02 23:45:29,455 INFO    MainThread:534635 [wandb_init.py:init():618] setting up manager
+2025-03-02 23:45:29,461 INFO    MainThread:534635 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-03-02 23:45:29,461 INFO    MainThread:534635 [wandb_init.py:init():624] backend started and connected
+2025-03-02 23:45:29,467 INFO    MainThread:534635 [wandb_init.py:init():716] updated telemetry
+2025-03-02 23:45:29,471 INFO    MainThread:534635 [wandb_init.py:init():749] communicating run to backend with 90.0 second timeout
+2025-03-02 23:45:30,047 INFO    MainThread:534635 [wandb_run.py:_on_init():2254] communicating current version
+2025-03-02 23:45:30,098 INFO    MainThread:534635 [wandb_run.py:_on_init():2263] got version response upgrade_message: "wandb version 0.19.7 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2025-03-02 23:45:30,098 INFO    MainThread:534635 [wandb_init.py:init():800] starting run threads in backend
+2025-03-02 23:45:32,295 INFO    MainThread:534635 [wandb_run.py:_console_start():2233] atexit reg
+2025-03-02 23:45:32,295 INFO    MainThread:534635 [wandb_run.py:_redirect():2088] redirect: wrap_raw
+2025-03-02 23:45:32,295 INFO    MainThread:534635 [wandb_run.py:_redirect():2153] Wrapping output streams.
+2025-03-02 23:45:32,296 INFO    MainThread:534635 [wandb_run.py:_redirect():2178] Redirects installed.
+2025-03-02 23:45:32,297 INFO    MainThread:534635 [wandb_init.py:init():841] run started, returning control to user process
+2025-03-02 23:45:51,853 INFO    MainThread:534635 [wandb_run.py:_finish():1962] finishing run czimbermark/LNS2+RL/1vpaqh7h
+2025-03-02 23:45:51,853 INFO    MainThread:534635 [wandb_run.py:_atexit_cleanup():2202] got exitcode: 0
+2025-03-02 23:45:51,853 INFO    MainThread:534635 [wandb_run.py:_restore():2185] restore
+2025-03-02 23:45:51,853 INFO    MainThread:534635 [wandb_run.py:_restore():2191] restore done
+2025-03-02 23:45:57,033 INFO    MainThread:534635 [wandb_run.py:_footer_history_summary_info():3837] rendering history
+2025-03-02 23:45:57,034 INFO    MainThread:534635 [wandb_run.py:_footer_history_summary_info():3869] rendering summary
+2025-03-02 23:45:57,039 INFO    MainThread:534635 [wandb_run.py:_footer_sync_info():3796] logging synced files

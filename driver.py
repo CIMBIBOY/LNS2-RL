@@ -12,7 +12,7 @@ from model import Model
 from runner import RLRunner
 from util import set_global_seeds,  write_to_wandb, perf_dict_driver
 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 ray.init(num_gpus=SetupParameters.NUM_GPU)
 print("Welcome to Dynamic MAPF!\n")
 
@@ -20,13 +20,13 @@ print("Welcome to Dynamic MAPF!\n")
 def main():
     """main code"""
     # preparing for training
-    restore_path = './final'
+    restore_path = '/home/ubuntu/LNS2-RL/model/final'
     net_path_checkpoint = restore_path + "/net_checkpoint.pkl"
     net_dict = torch.load(net_path_checkpoint)
 
     if RecordingParameters.WANDB:
         if RecordingParameters.RETRAIN:
-            wandb_id = ''
+            wandb_id = '23d04321db6be0e116c9dc331458bf4c277698a4'
         else:
             wandb_id = wandb.util.generate_id()
         wandb.init(project=RecordingParameters.EXPERIMENT_PROJECT,

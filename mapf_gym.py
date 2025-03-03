@@ -10,6 +10,12 @@ from alg_parameters import *
 from dynamic_state import DyState
 opposite_actions = {0: -1, 1: 3, 2: 4, 3: 1, 4: 2, 5: 7, 6: 8, 7: 5, 8: 6}
 
+" CIMBIBOY adding radar zones and visualize"
+from PIL import Image
+from GridBasedPathPlanning.RL_Environment.environment.map_generator import map_to_value
+from GridBasedPathPlanning.Environment.GridMapEnv import GridMapEnv, GridToRGB
+" 2025 mar 3"
+
 
 class MAPFEnv(gym.Env):
     """map MAPF problems to a standard RL environment"""
@@ -487,9 +493,35 @@ class MAPFEnv(gym.Env):
             done = True
         return obs, vector, rewards, done, next_valid_actions,num_on_goal, num_dynamic_collide,num_agent_collide,success,real_r
 
-    def _global_reset(self):
-        """restart a new task"""
-        self.global_set_world()  # back to the initial situation
+    def _global_reset(self, cl_num_task):
+        """
+        Reset the environment and initialize the base static map and dynamic obstacles,
+        using WarehouseEnvironment’s core logic. This integrates the base map and the dynamic
+        obstacle creation while leaving the MAPF parameters unchanged.
+        """
+        # First, call the existing MAPF environment setup (if any)
+        self.global_set_world(cl_num_task)
+        
+        # --- Begin WarehouseEnvironment integration ---
+        # Use the static map image from WarehouseEnvironment (or use self.map if already set)
+        static_map = "GridBasedPathPlanning/RL_Environment/data/cleaned_empty/empty-48-48-random-10_60_agents.png"
+        self.map = np.asarray(Image.open(static_map))
+        self.map_v = map_to_value(self.map)
+        
+        # Create the grid using GridMapEnv (ensuring the grid size matches your env)
+        self.grid = GridMapEnv(grid_size=(self.height, self.width))
+        self.grid.SetStaticGrid(self.map_v)
+        self.grid.ClearGrid(gridtype="grid_dynamic")
+        # Use the existing dynamic obstacle count from CL_MAPFEnv, e.g., self.amr_count
+        self.grid.addRandomDynamicObstacles(no_of_obs=self.amr_count, d_range=(1, 6), alpha=0.4)
+        
+        # Set frames if needed (e.g., 200) and generate the grid sequence
+        self.frames = 200  # or use a parameter if defined elsewhere
+        self.grid.ResetDynamicObstacles()
+        self.grid_seq = self.grid.GenerateGridSequence(self.frames, reset_after=True)
+        # Optionally, update self.init_arr to the base map image:
+        self.init_arr = GridToRGB(self.grid.grid)
+        # --- End WarehouseEnvironment integration ---
         self.lns2_model=my_lns2.MyLns2(self.env_id*123,self.map,self.start_list,self.goal_list,self.global_num_agent,self.map.shape[0])
         self.lns2_model.init_pp()
         self.paths=self.lns2_model.vector_path

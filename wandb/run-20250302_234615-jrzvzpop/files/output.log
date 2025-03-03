@@ -1,0 +1,45 @@
+id is:jrzvzpop
+Launching wandb...
+/home/ubuntu/LNS2-RL/driver.py:97: RuntimeWarning: Mean of empty slice
+  perf_dict[key].append(np.nanmean(job_results[results][-1][key]))
+/home/ubuntu/LNS2-RL/driver.py:103: RuntimeWarning: Mean of empty slice
+  perf_dict[key] = np.nanmean(perf_dict[key])
+episodes: 0, steps: 4096, win rate:nan
+Saving Model !
+episodes: 160, steps: 57344, win rate:0.0
+episodes: 304, steps: 110592, win rate:0.0
+episodes: 448, steps: 163840, win rate:nan
+episodes: 608, steps: 217088, win rate:0.0
+episodes: 752, steps: 270336, win rate:0.0
+episodes: 896, steps: 323584, win rate:nan
+episodes: 1056, steps: 376832, win rate:0.0
+episodes: 1200, steps: 430080, win rate:0.0
+episodes: 1344, steps: 483328, win rate:nan
+episodes: 1504, steps: 536576, win rate:0.0
+episodes: 1648, steps: 589824, win rate:0.0
+episodes: 1792, steps: 643072, win rate:nan
+episodes: 1952, steps: 696320, win rate:0.0
+episodes: 2096, steps: 749568, win rate:0.0
+episodes: 2240, steps: 802816, win rate:nan
+Saving Model !
+episodes: 2400, steps: 856064, win rate:0.0
+episodes: 2544, steps: 909312, win rate:0.0
+episodes: 2688, steps: 962560, win rate:nan
+episodes: 2848, steps: 1015808, win rate:0.0
+episodes: 2992, steps: 1069056, win rate:0.0
+episodes: 3152, steps: 1122304, win rate:0.0
+episodes: 3296, steps: 1175552, win rate:0.0
+episodes: 3440, steps: 1228800, win rate:nan
+episodes: 3600, steps: 1282048, win rate:0.0
+episodes: 3744, steps: 1335296, win rate:0.0
+episodes: 3888, steps: 1388544, win rate:nan
+episodes: 4048, steps: 1441792, win rate:0.0
+episodes: 4192, steps: 1495040, win rate:0.0
+episodes: 4336, steps: 1548288, win rate:nan
+episodes: 4496, steps: 1601536, win rate:0.0
+Saving Model !
+episodes: 4640, steps: 1654784, win rate:0.0
+episodes: 4784, steps: 1708032, win rate:nan
+episodes: 4944, steps: 1761280, win rate:0.0
+episodes: 5088, steps: 1814528, win rate:0.0
+episodes: 5232, steps: 1867776, win rate:nan

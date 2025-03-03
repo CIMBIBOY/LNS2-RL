@@ -1,0 +1,7 @@
+objects:
+- {typ: static, shape: Ellipsoid, data: {p: [5,5], d: 5, alpha: 0.95, gradient: 0}}
+- {typ: static, shape: Rectangle, data: {p_min: [30,42], p_max: [70,46]}}
+- {typ: dynamic, shape: Ellipsoid, data: {p: [50, 200], d: 40, vel: [-0.14,0.1], alpha: 0.9}}
+- {typ: dynamic, shape: Ellipsoid, data: {p: [200,250], d: 40, vel: [-0.5,-0.5], alpha: 0.9, gradient: 0.1}}
+- {typ: dynamic, shape: Ellipsoid, data: {p: [180,200], d: 40, vel: [-0.9,-0.35], alpha: 0.9, gradient: 0.2}}
+- {typ: dynamic, shape: Ellipsoid, data: {p: [150, 10], d: 54, vel: [-0.1, 0.2], alpha: 0.7, gradient: 0.6}}

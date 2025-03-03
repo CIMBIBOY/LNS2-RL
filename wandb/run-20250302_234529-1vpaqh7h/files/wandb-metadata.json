@@ -1,0 +1,88 @@
+{
+    "os": "Linux-5.4.0-182-generic-x86_64-with-glibc2.31",
+    "python": "3.11.11",
+    "heartbeatAt": "2025-03-02T23:45:30.128952",
+    "startedAt": "2025-03-02T23:45:29.453126",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/ubuntu/LNS2-RL/driver.py",
+    "codePathLocal": "driver.py",
+    "codePath": "driver.py",
+    "git": {
+        "remote": "https://github.com/CIMBIBOY/LNS2-RL.git",
+        "commit": "7f2ae2d24a67c9806734789cef717c942e1b8e07"
+    },
+    "email": "czimbermark@gmail.com",
+    "root": "/home/ubuntu/LNS2-RL",
+    "host": "satiprime",
+    "username": "ubuntu",
+    "executable": "/home/ubuntu/miniconda/envs/lns2+RL/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2200.0,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 496.0301856994629,
+            "used": 19.31108856201172
+        }
+    },
+    "gpu": "GRID A100-20C",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "GRID A100-20C",
+            "memory_total": 21474836480
+        }
+    ],
+    "memory": {
+        "total": 31.348087310791016
+    }
+}
