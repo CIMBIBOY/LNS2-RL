@@ -238,6 +238,7 @@ int ReservationTable::get_earliest_arrival_time(int from, int to, int lower_boun
     }
     return -1;
 }
+
 int ReservationTable::get_earliest_no_collision_arrival_time(int from, int to, const Interval& interval,
                                                              int lower_bound, int upper_bound) const
 {

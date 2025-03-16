@@ -1,0 +1,190 @@
+wandb_version: 1
+
+LOCAL_N_AGENTS:
+  desc: null
+  value:
+  - 8
+  - 8
+  - 8
+GLOBAL_N_AGENT:
+  desc: null
+  value:
+  - - 0.1
+    - 0.15
+    - 0.15
+N_ACTIONS:
+  desc: null
+  value: 5
+EPISODE_LEN:
+  desc: null
+  value:
+  - 356
+  - 356
+  - 356
+FOV_SIZE:
+  desc: null
+  value: 9
+WORLD_SIZE:
+  desc: null
+  value:
+  - 10
+  - 25
+  - 50
+OBSTACLE_PROB:
+  desc: null
+  value:
+  - - 0.05
+    - 0.075
+    - 0.1
+  - - 0.1
+    - 0.125
+    - 0.15
+  - - 0.15
+    - 0.175
+    - 0.2
+ACTION_COST:
+  desc: null
+  value:
+  - -0.4
+  - -0.5
+  - -0.6
+IDLE_COST:
+  desc: null
+  value:
+  - -0.4
+  - -0.5
+  - -0.6
+GOAL_REWARD:
+  desc: null
+  value: 0.0
+AG_COLLISION_COST:
+  desc: null
+  value: -1.5
+DY_COLLISION_COST:
+  desc: null
+  value: -1.5
+NUM_TIME_SLICE:
+  desc: null
+  value: 9
+lr:
+  desc: null
+  value: 1.0e-05
+GAMMA:
+  desc: null
+  value: 0.95
+LAM:
+  desc: null
+  value: 0.95
+CLIPRANGE:
+  desc: null
+  value: 0.2
+MAX_GRAD_NORM:
+  desc: null
+  value: 50
+ENTROPY_COEF:
+  desc: null
+  value: 0.01
+VALUE_COEF:
+  desc: null
+  value: 0.5
+POLICY_COEF:
+  desc: null
+  value: 1
+VALID_COEF:
+  desc: null
+  value: 0.5
+N_EPOCHS:
+  desc: null
+  value: 10
+N_ENVS:
+  desc: null
+  value: 16
+N_MAX_STEPS:
+  desc: null
+  value: 70000000.0
+N_STEPS:
+  desc: null
+  value: 256
+MINIBATCH_SIZE:
+  desc: null
+  value: 512
+NET_SIZE:
+  desc: null
+  value: 512
+NUM_CHANNEL:
+  desc: null
+  value: 31
+GOAL_REPR_SIZE:
+  desc: null
+  value: 32
+VECTOR_LEN:
+  desc: null
+  value: 8
+SEED:
+  desc: null
+  value: 1234
+USE_GPU_LOCAL:
+  desc: null
+  value: false
+USE_GPU_GLOBAL:
+  desc: null
+  value: true
+NUM_GPU:
+  desc: null
+  value: 1
+RETRAIN:
+  desc: null
+  value: false
+WANDB:
+  desc: null
+  value: true
+ENTITY:
+  desc: null
+  value: czimbermark
+TIME:
+  desc: null
+  value: 06-03-251452
+EXPERIMENT_PROJECT:
+  desc: null
+  value: LNS2+RL
+EXPERIMENT_NAME:
+  desc: null
+  value: sztaki-train
+EXPERIMENT_NOTE:
+  desc: null
+  value: ''
+SAVE_INTERVAL:
+  desc: null
+  value: 1638400
+MODEL_PATH:
+  desc: null
+  value: ./models/LNS2+RL/sztaki-train06-03-251452
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.11
+    cli_version: 0.16.1
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1741272736.310467
+    t:
+      1:
+      - 1
+      - 30
+      - 55
+      2:
+      - 1
+      - 30
+      - 55
+      3:
+      - 2
+      - 13
+      - 14
+      - 16
+      - 23
+      4: 3.11.11
+      5: 0.16.1
+      8:
+      - 5
+      13: linux-x86_64

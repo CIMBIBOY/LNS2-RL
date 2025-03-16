@@ -1,0 +1,30 @@
+id is:bvvl0yol
+Launching wandb...
+[36m(RLRunner pid=663260)[39m Exception raised in creation task: The actor died because of an error raised in its creation task, [36mray::RLRunner.__init__()[39m (pid=663260, ip=10.1.123.172, actor_id=0e9bf0dc966c2c0aa5e9de1301000000, repr=<runner.RLRunner object at 0x7f7bd7524910>)
+[36m(RLRunner pid=663260)[39m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=663260)[39m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=663260)[39m   File "/home/ubuntu/LNS2-RL/runner.py", line 286, in __init__
+[36m(RLRunner pid=663260)[39m     super().__init__(meta_agent_id)
+[36m(RLRunner pid=663260)[39m   File "/home/ubuntu/LNS2-RL/runner.py", line 33, in __init__
+[36m(RLRunner pid=663260)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663260)[39m   File "/home/ubuntu/LNS2-RL/mapf_gym.py", line 620, in _global_reset
+[36m(RLRunner pid=663260)[39m     self.global_set_world(cl_num_task)
+[36m(RLRunner pid=663260)[39m   File "/home/ubuntu/LNS2-RL/mapf_gym.py", line 178, in global_set_world
+[36m(RLRunner pid=663260)[39m     self.height, self.width = self.size
+[36m(RLRunner pid=663260)[39m     ^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=663260)[39m TypeError: cannot unpack non-iterable int object
+[36m(RLRunner pid=663255)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663796)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663254)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663790)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663258)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663794)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663256)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663257)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663789)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663259)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663793)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663795)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663261)[39m     self.env._global_reset(0)
+[36m(RLRunner pid=663792)[39m     self.env._global_reset(0)
+Saving Final Model !

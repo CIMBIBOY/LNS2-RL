@@ -5,12 +5,21 @@ import datetime
 
 class EnvParameters:
     LOCAL_N_AGENTS_LIST = [8,8,8]  # number of agents used in training
-    GLOBAL_N_AGENT_LIST=[(0.4,0.45,0.5),(0.5,0.55,0.6),(0.6,0.65,0.7)]
-    N_ACTIONS = 5
-    EPISODE_LEN = [356,356,356]
-    FOV_SIZE = 9
-    WORLD_SIZE_LIST = [10,25,50]
-    OBSTACLE_PROB_LIST = [(0.05,0.075,0.1),(0.1,0.125,0.15),(0.15,0.175,0.2)]
+    
+    # GLOBAL_N_AGENT_LIST is used to compute the total number of agents.
+    # The number is computed as: 
+    #    global_num_agent = round(random.choice(GLOBAL_N_AGENT_LIST[cl_num_task]) * grid_area)
+    # For a 64x64 grid, grid_area = 4096.
+    # To get exactly 5 agents, use the ratio 5/4096.
+    GLOBAL_N_AGENT_LIST= [(0.01, 0.02, 0.03)] # [(0.4,0.45,0.5),(0.5,0.55,0.6),(0.6,0.65,0.7)]
+    
+    N_ACTIONS = 5  # Number of discrete actions available.
+    EPISODE_LEN = [356, 356, 356] # Episode length (number of timesteps per episode) for each curriculum level.
+    FOV_SIZE = 9  # Field-of-view size (observations are extracted from a square of this size).
+    WORLD_SIZE_LIST = [64,96,128] # List of possible grid sizes. To use a 64x64 grid, include 64.
+    OBSTACLE_PROB_LIST = [(0.05,0.075,0.1),(0.1,0.125,0.15),(0.15,0.175,0.2)] # Obstacle probabilities for each curriculum level.
+    
+    # Costs and rewards.
     ACTION_COST = [-0.4,-0.5,-0.6]
     IDLE_COST = [-0.4,-0.5,-0.6]
     ADD_COST=-0.2
@@ -18,16 +27,23 @@ class EnvParameters:
     GOAL_REWARD = 0.0
     DY_COLLISION_COST = -1.5
     AG_COLLISION_COST = -1.5
-    NUM_TIME_SLICE=9
-    WINDOWS=15
-    OFF_ROUTE_FACTOR=[0.06,0.05,0.04]
+    
+    NUM_TIME_SLICE = 9
+    WINDOWS = 15
+    # Off-route factors for each curriculum level.
+    OFF_ROUTE_FACTOR = [0.06, 0.05, 0.04]
     DIS_FACTOR = 0.2
-    SWITCH_TIMESTEP=[1e7,2e7]
-    UTI_WINDOWS=list(range(-2,16))
-    UTI_WEIGHT=[0.25,0.75] # edge,vertex
-    OVERALL_WEIGHT= -0.3
+    
+    # Timesteps to switch curriculum (if used).
+    SWITCH_TIMESTEP = [1e7, 2e7]
+
+    # Utilization window parameters.
+    UTI_WINDOWS = list(range(-2, 16))
+    UTI_WEIGHT = [0.25, 0.75]  # Weights for edge vs. vertex usage.
+    
+    OVERALL_WEIGHT = -0.3
     DIS_TIME_WEIGHT = [0.9, 0.1]
-    K_STEPS=5
+    K_STEPS = 5
 
 
 class TrainingParameters:

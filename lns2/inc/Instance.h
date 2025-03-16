@@ -40,8 +40,9 @@ public:
         return abs(loc1_x - loc2_x) + abs(loc1_y - loc2_y);
     }
 
-
-
+    // Returns a constant reference to the map data.
+    const vector<bool>& getMap() const { return my_map; }
+    
 private:
 	  // int moves_offset[MOVE_COUNT];
 	  vector<bool> my_map;

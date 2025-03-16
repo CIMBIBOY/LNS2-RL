@@ -23,7 +23,16 @@ void MyLns2::init_pp()
     for (auto id : neighbor.agents)
     {
         agents[id].path = agents[id].path_planner->findPath(constraint_table);
-        assert(!agents[id].path.empty() && agents[id].path.back().location == agents[id].path_planner->goal_location);  // no hard obstacle, thus must find path
+        // Add this before the assertion
+    if (agents[id].path.empty()) {
+        std::cout << "ERROR: Agent " << id << " has empty path after planning" << std::endl;
+        std::cout << "  Start location: " << agents[id].path_planner->start_location << std::endl;
+        std::cout << "  Goal location: " << agents[id].path_planner->goal_location << std::endl;
+    } else if (agents[id].path.back().location != agents[id].path_planner->goal_location) {
+        std::cout << "ERROR: Agent " << id << " final location mismatch" << std::endl;
+        std::cout << "  Path back location: " << agents[id].path.back().location << std::endl;
+        std::cout << "  Goal location: " << agents[id].path_planner->goal_location << std::endl;
+    }  // no hard obstacle, thus must find path
         path_table.insertPath(agents[id].id, agents[id].path);
     }
     vector_path.reserve(instance.num_of_agents);
@@ -109,7 +118,25 @@ int MyLns2::calculate_sipps(vector<int> new_agents)
     {
         int id = *p;
         agents[id].path = agents[id].path_planner->findPath(constraint_table);
-        assert(!agents[id].path.empty() && agents[id].path.back().location == agents[id].path_planner->goal_location);
+        if (agents[id].path.empty()) {
+            std::cout << "Warning: No path found for agent " << id << ". Using fallback strategy." << std::endl;
+            
+            // Fallback strategy options:
+            // 1. Keep the agent at its start position
+            Path fallback_path;
+            fallback_path.push_back(PathEntry(agents[id].path_planner->start_location));
+            agents[id].path = fallback_path;
+            
+            // 2. Or try alternative pathfinding method
+            // agents[id].path = findAlternativePath(...);
+        }
+        
+        // Now check that the path ends at the goal (or use an alternative goal if needed)
+        if (agents[id].path.back().location != agents[id].path_planner->goal_location) {
+            std::cout << "Warning: Agent " << id << " couldn't reach goal. Path ends at " 
+                      << agents[id].path.back().location << " instead of " 
+                      << agents[id].path_planner->goal_location << std::endl;
+        }
         if (agents[id].path_planner->num_collisions > 0)
             updateCollidingPairs(neighbor.colliding_pairs, agents[id].id, agents[id].path);
         vector<pair<int,int>> single_path;

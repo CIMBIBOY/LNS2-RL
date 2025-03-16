@@ -1,0 +1,18 @@
+id is:2lrhs4a6
+Launching wandb...
+[36m(RLRunner pid=659410)[39m Exception raised in creation task: The actor died because of an error raised in its creation task, [36mray::RLRunner.__init__()[39m (pid=659410, ip=10.1.123.172, actor_id=f167f9a7eef610a691e3935c01000000, repr=<runner.RLRunner object at 0x7f29149ddc90>)
+[36m(RLRunner pid=659410)[39m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=659410)[39m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=659410)[39m   File "/home/ubuntu/LNS2-RL/runner.py", line 286, in __init__
+[36m(RLRunner pid=659410)[39m     super().__init__(meta_agent_id)
+[36m(RLRunner pid=659410)[39m   File "/home/ubuntu/LNS2-RL/runner.py", line 24, in __init__
+[36m(RLRunner pid=659410)[39m     self.env =CL_MAPFEnv(env_id)
+[36m(RLRunner pid=659410)[39m               ^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=659410)[39m   File "/home/ubuntu/LNS2-RL/mapf_gym.py", line 54, in __init__
+[36m(RLRunner pid=659410)[39m     self.grid = GridMapEnv(grid_size=(size,size)) # Create the Grid environment
+[36m(RLRunner pid=659410)[39m                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=659410)[39m   File "/home/ubuntu/LNS2-RL/GridBasedPathPlanning/Environment/GridMapEnv.py", line 20, in __init__
+[36m(RLRunner pid=659410)[39m     self.grid_static  = np.zeros(grid_size, dtype=self.dtype)
+[36m(RLRunner pid=659410)[39m                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[36m(RLRunner pid=659410)[39m TypeError: 'list' object cannot be interpreted as an integer
+Saving Final Model !

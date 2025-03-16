@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <boost/functional/hash.hpp>
+// #include <opencv2/opencv.hpp>
 #include "SingleAgentSolver.h"
 #include "ReservationTable.h"
 
@@ -71,6 +72,24 @@ public:
     //Path findOptimalPath(const PathTable& path_table) {return Path(); } // TODO: To implement
     //Path findOptimalPath(const ConstraintTable& constraint_table, const PathTableWC& path_table);
     Path findPath(const ConstraintTable& constraint_table); // return A path that minimizes collisions, breaking ties by cost
+	// New visualization routine:
+    void dumpVisualization(int iteration);
+
+	// Data members used in visualization (you may adjust these as needed):
+    // "instance" is already available from SingleAgentSolver (if not, include it here)
+    // Here we add a simple structure for world if not already defined.
+    struct World {
+        std::vector<int> agents_poss; // current positions (linearized indices)
+        // Other members can be added as needed.
+    } world;
+
+    // The current best path found so far (as linearized indices).
+    std::vector<int> current_best_path;
+    // A container holding pointers to nodes currently in the focal list.
+    std::list<LLNode*> focal_list_container;
+    
+    // Other visualization-related members...
+    int num_expanded;  // for example, number of nodes expanded
 
 	SIPP(const Instance& instance, int agent,const vector<int>& start_locations,const vector<int>& goal_locations):
 		SingleAgentSolver(instance, agent,start_locations,goal_locations) {}

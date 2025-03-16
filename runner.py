@@ -1,6 +1,7 @@
 import numpy as np
 import ray
 import torch
+import os
 
 from alg_parameters import *
 from mapf_gym import CL_MAPFEnv
@@ -38,9 +39,15 @@ class Runner(object):
                             dtype=np.float32) for _ in range(NetParameters.TIME_DEPT)]
         self.all_obs[-1] = self.obs
         self.im_first_time=True
+        
+        # Create a unique output directory for this runner using its ID.
+        self.output_dir = os.path.join("test_images", f"env_{self.ID}")
+        os.makedirs(self.output_dir, exist_ok=True)
+        self.env.save_rgb_image(os.path.join(self.output_dir, "step_000.png"))
 
     def rl_run(self, weights,cl_task_num,switch_task):
         """run multiple steps and collect data for reinforcement learning"""
+        print("entered")
         with torch.no_grad():
             if switch_task:
                 self.local_num_agent= EnvParameters.LOCAL_N_AGENTS_LIST[cl_task_num]
@@ -63,7 +70,7 @@ class Runner(object):
             perf_dict = perf_dict_driver()
 
             self.local_model.set_weights(weights)
-            for _ in range(TrainingParameters.N_STEPS):
+            for step in range(TrainingParameters.N_STEPS):
                 cat_all_obs = np.stack(self.all_obs, axis=2)
                 mb_obs.append(cat_all_obs)
                 mb_vector.append(self.vector)
@@ -82,6 +89,9 @@ class Runner(object):
 
                 rewards, self.valid_actions, self.obs, self.vector, self.train_valid, self.done, \
                     num_on_goals= self.rl_one_step(actions)
+                    
+                out_file = os.path.join(self.output_dir, f"step_{step:03d}.png")
+                self.env.save_rgb_image(out_file)
 
                 mb_rewards.append(rewards)
 
@@ -173,7 +183,7 @@ class Runner(object):
         obs, vector, rewards, done, next_valid_actions, \
             num_on_goal, num_dynamic_collide, num_agent_collide,success,real_r  \
             = self.env.joint_step(actions)
-
+        
         self.one_episode_perf['num_dynamic_collide'] += num_dynamic_collide
         self.one_episode_perf['num_agent_collide'] += num_agent_collide
         self.one_episode_perf['real_reward'] += real_r
@@ -277,6 +287,7 @@ class Runner(object):
 class RLRunner(Runner):
     def __init__(self, meta_agent_id):
         super().__init__(meta_agent_id)
+        
 
 
 
