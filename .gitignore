@@ -1,2 +1,56 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pkl
+
+# Conda & virtualenv
+.venv/
+.conda/
+env/
+*.env
+*.venv
+
+# ROS bag files
+Ros/Bags/
+*.bag
+*.bag.active
+
+# Compiled & build files
+lns2/build/
+*.so
+*.o
+*.out
+*.a
+*.log
+
+# CMake and ROS generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+devel/
+install/
+
+# Debug / temp
+*.swp
+*.bak
+*.tmp
+*.DS_Store
+
+# ML & training artifacts
 models/
 wandb/
+*.pth
+*.pt
+*.npy
+*.npz
+
+# Image outputs
+*.png
+*.jpg
+*.jpeg
+
+# All generated visualizations
+sipps_visualizations/
+test_images/

@@ -1,6 +1,0 @@
-id is:11cjhz2j
-Launching wandb...
-[36m(RLRunner pid=684520)[39m RGB image saved to test_images/env_4/step_000.png
-Saving Model !
-CTRL-C pressed. killing remote workers
-Saving Final Model !

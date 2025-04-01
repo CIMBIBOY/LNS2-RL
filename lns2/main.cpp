@@ -25,3 +25,5 @@ PYBIND11_MODULE(my_lns2, m) {
             .def_readwrite("sipps_path", &MyLns2::sipps_path)
             .def_readwrite("makespan", &MyLns2::makespan);
 }
+
+// .def(py::init<int, vector<vector<vector<int>>>, vector<pair<int,int>>, vector<pair<int,int>>, int, int>())

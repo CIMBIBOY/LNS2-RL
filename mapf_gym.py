@@ -12,11 +12,14 @@ from dynamic_state import DyState
 opposite_actions = {0: -1, 1: 3, 2: 4, 3: 1, 4: 2, 5: 7, 6: 8, 7: 5, 8: 6}
 
 # "CIMBIBOY includes" – additional imports from WarehouseEnvironment code
+import os
 from PIL import Image, ImageDraw
 import matplotlib as plt
 from GridBasedPathPlanning.RL_Environment.environment.map_generator import map_to_value
-from GridBasedPathPlanning.Environment.GridMapEnv import GridMapEnv, GridToRGB
+from GridBasedPathPlanning.Environment.GridMapEnv import GridMapEnv
+from GridBasedPathPlanning.Environment.GridMapEnv_Utils import GridToRGB
 # "2025 mar 3." – date stamp or version
+
 
 class CL_MAPFEnv(gym.Env):
     """
@@ -50,21 +53,35 @@ class CL_MAPFEnv(gym.Env):
         self.im_flag = im_flag
 # ______________________________________________________________________________________________________________________
         # WarehouseEnvironment logic for dynamic obstacles and grid creation is integrated later.
-        self.amr_count = 1
+        self.amr_count = 10
         self.max_amr = 10
         self.FRAMES = 200
         self.curriculum = 100
         
     def set_grid(self, static_map, map_idx, add_num_dyn_obj, FRAMES):
         self.map_idx = map_idx
-        self.map=np.asarray(static_map)
-        self.map_v = map_to_value(self.map)
+        self.map_a=np.asarray(static_map)
+        # Convert to 0 / 1 for GridMapEnv
+        map_for_env = (self.map_a == -1).astype(np.float32)
+        # Convert 2D map to a 3-channel map (each cell becomes [value, value, value])
+        rgb_map = np.stack([map_for_env] * 3, axis=-1)
+        self.map_v = map_to_value(rgb_map)
         self.grid.SetStaticGrid(self.map_v)
         self.grid.ClearGrid(gridtype="grid_dynamic")
         self.grid.addRandomDynamicObstacles(no_of_obs=add_num_dyn_obj, d_range=(1,6), alpha = 0.4)
         self.frames = FRAMES
         self.grid.ResetDynamicObstacles()
         self.grid_seq = self.grid.GenerateGridSequence(self.frames, reset_after=True)
+        self.grid.RenderAllObstacles(typ='static')
+        self.grid.RenderAllObstacles(typ="dynamic")
+        self.grid.RenderGrid()
+        Image.fromarray((self.grid.grid * 255).astype(np.uint8)).save("debug_maps/raw_grid_env_1.png")
+        self.init_arr = GridToRGB(self.grid.grid)
+        
+        print("🧠 DEBUG: init_arr shape:", self.init_arr.shape)
+        print("🧠 DEBUG: init_arr dtype:", self.init_arr.dtype)
+        print("🧠 DEBUG: init_arr min/max:", np.min(self.init_arr), np.max(self.init_arr))
+        print("🧠 DEBUG: init_arr sample:\n", self.init_arr[0:3, 0:3])
 
         self.initial_random_steps = False
         self.was_reached = False
@@ -87,6 +104,45 @@ class CL_MAPFEnv(gym.Env):
     def reGenerateAndAdd(self):
         self.grid.addRandomDynamicObstacles(no_of_obs=1, d_range=(1,4), alpha = 0.4)
         self.grid_seq = self.grid.GenerateGridSequence(self.frames, reset_after=True)
+        
+    def update_dyn_map(self, step = 1):
+        """
+        Update dynamic obstacles and merge them with the static map to produce an effective map.
+        This should be called at every step.
+        """
+        self.grid.ClearGrid(gridtype="grid_dynamic")
+        if step == 1:
+            self.grid.StepDynamicObstacles()
+        self.grid.RenderAllObstacles(typ="dynamic")
+        self.grid.RenderGrid()
+        self.init_arr = GridToRGB(self.grid.grid)
+    
+    @staticmethod    
+    def save_debug_map(env_id, init_arr, grid_seq):
+        """Save debug versions of the initial RGB array and first dynamic grid frame."""
+        debug_dir = "debug_maps"
+        os.makedirs(debug_dir, exist_ok=True)
+
+        # Save the RGB image (init_arr)
+        img_path = os.path.join(debug_dir, f"init_arr_env_{env_id}.png")
+        if init_arr.dtype == np.float32 or init_arr.max() <= 1.0:
+            img = (init_arr * 255).astype(np.uint8)
+        else:
+            img = init_arr.astype(np.uint8)
+        Image.fromarray(img).save(img_path)
+        print(f"[DEBUG] Saved init_arr RGB image to: {img_path}")
+
+        # Save the first frame of the dynamic map (grid_seq[0]) as .npy
+        grid_path = os.path.join(debug_dir, f"first_frame_env_{env_id}.npy")
+        np.save(grid_path, np.array(grid_seq[0]))
+        print(f"[DEBUG] Saved first frame of dynamic map to: {grid_path}")
+
+        # Optionally save the first frame as RGB image too
+        first_frame_rgb = GridToRGB(grid_seq[0])
+        rgb_path = os.path.join(debug_dir, f"first_frame_rgb_env_{env_id}.png")
+        Image.fromarray(first_frame_rgb).save(rgb_path)
+        print(f"[DEBUG] Saved first frame RGB image to: {rgb_path}")
+    
 # ______________________________________________________________________________________________________________________
     
     def global_set_world(self, cl_num_task):
@@ -177,8 +233,8 @@ class CL_MAPFEnv(gym.Env):
                 
         
         self.grid = GridMapEnv(grid_size=(self.height, self.width)) # Create the Grid environment
+        # Initialize map
         # self.set_grid(self.map, self.env_id, self.amr_count, self.FRAMES)
-
         # Initialize the world state with the fix_state and agent positions.
         self.world = State(self.fix_state, self.fix_state_dict, self.global_num_agent, self.start_list, self.goal_list)
 
@@ -544,6 +600,9 @@ class CL_MAPFEnv(gym.Env):
           5. Returns the observation, state vector, reward, done flag, next valid actions,
              and some performance metrics.
         """
+        # Step the dynamic obstacles before processing agent actions:
+        self.update_dyn_map(1)
+    
         self.time_step += 1
         dynamic_collision_status, agent_collision_status, reach_goal_status = self.joint_move(actions)
 
@@ -619,6 +678,33 @@ class CL_MAPFEnv(gym.Env):
     def _global_reset(self, cl_num_task):
         # Reinitialize the MAPF task (this call resets start/goal positions, etc.)
         self.global_set_world(cl_num_task)
+        
+        # Step the dynamic obstacles before processing agent actions:
+        self.set_grid(self.map, self.env_id, self.amr_count, self.FRAMES)
+        # Save raw static map as RGB for comparison
+        Image.fromarray((self.init_arr).astype(np.uint8)).save(f"debug_maps/static_map_env_{self.env_id}.png")
+        
+        print("[DEBUG] Grid object count after static setup:", len(self.grid.objects))
+        print("[DEBUG] Static grid has nonzero elements:", np.count_nonzero(self.grid.grid_static))
+        
+        print("🔍 DEBUG: Checking grid/map characteristics before MyLns2...")
+
+        # Static 2D map (was previously passed to LNS2)
+        print("→ self.map shape:", self.map.shape)
+        print("→ self.map dtype:", self.map.dtype)
+        print("→ self.map min/max:", np.min(self.map), np.max(self.map))
+        print("→ self.map sample slice:\n", self.map[:5, :5])
+
+        # Dynamic 3D grid sequence
+        print("→ self.grid_seq shape:", self.grid_seq.shape)
+        print("→ self.grid_seq dtype:", self.grid_seq.dtype)
+        print("→ self.grid_seq min/max:", np.min(self.grid_seq), np.max(self.grid_seq))
+
+        # First frame (what you're passing now)
+        print("→ First frame slice (t=0):\n", self.grid_seq[0][:5, :5])
+        # 🧠 Save for visual & numerical debugging
+        self.save_debug_map(self.env_id, self.init_arr, self.grid_seq)   
+        
         # Initialize the LNS2 planner with the current map and agent data.
         self.lns2_model = my_lns2.MyLns2(self.env_id * 123, self.map, self.start_list, self.goal_list, self.global_num_agent, self.map.shape[0])
         self.lns2_model.init_pp()
@@ -641,6 +727,9 @@ class CL_MAPFEnv(gym.Env):
           4. Updates agent paths and re-computes dynamic state for local tasks.
           5. Reinitializes utility maps and resets collision pairs.
         """
+        # Step the dynamic obstacles before processing agent actions:
+        self.update_dyn_map(0)
+        
         self.local_num_agents = local_num_agents
         new_agents = random.sample(range(self.global_num_agent), local_num_agents)
         self.time_step = 0
@@ -681,64 +770,3 @@ class CL_MAPFEnv(gym.Env):
     def list_next_valid_actions(self, local_agent_index):
         """Return the list of valid actions for the agent at local_agent_index."""
         return self.world.list_next_valid_actions(local_agent_index)
-
-    def save_rgb_image(self, out_file):
-        """
-        Save an RGB image of the current map using PIL.
-
-        The image is constructed from the static grid (self.map) where free cells are white
-        and obstacles are black. Overlaid on this image are:
-        - Goals: drawn as blue circles (smaller or semi-transparent).
-        - Agents: drawn as red circles.
-        
-        Parameters:
-        out_file: The file path where the image will be saved.
-        """
-        # Create a new white image.
-        base_img = Image.new("RGB", (self.width, self.height), (255, 255, 255))
-        draw = ImageDraw.Draw(base_img, "RGBA")  # Use RGBA mode to allow transparency
-
-        # Draw  obstacles as black points.
-        for i in range(self.height):
-            for j in range(self.width):
-                if self.map[i, j] == -1:
-                    draw.point((j, i), fill=(0, 0, 0, 255))
-
-        # Overlay goal positions as blue circles.
-        # Use a smaller radius (e.g., 1 pixel) and semi-transparency.
-        for goal in self.goal_list:
-            x, y = int(goal[1]), int(goal[0])
-            # Fill with blue and set alpha to 128 (semi-transparent)
-            draw.point((x, y), fill=(0, 0, 255))
-        
-        # Overlay agent positions as red circles (draw these last so they are visible).
-        # Draw agents fully opaque in red.
-        for pos in self.world.agents_poss:
-            x, y = int(pos[1]), int(pos[0])
-            draw.point((x, y), fill=(255, 0, 0))
-            
-        # 4. If you have one or more paths in `self.sipps_path`, 
-        #    draw them as small yellow circles:
-        if hasattr(self, "sipps_path") and self.sipps_path:
-            # Suppose sipps_path is a list of paths, each path is a list of (row, col)
-            circle_radius = 0.5  # size of the circle
-            path_color = (255, 255, 0, 255)  # solid yellow  
-
-            # If you only want the first path, do: 
-            #   for (row, col) in self.sipps_path[0]:
-            #       ...
-            # Otherwise, loop over all agents:
-            for path in self.sipps_path:
-                for (r, c) in path:
-                    x, y = c, r
-                    # draw a small circle of diameter 2*circle_radius
-                    draw.ellipse(
-                        (x - circle_radius, y - circle_radius, 
-                        x + circle_radius, y + circle_radius),
-                        fill=path_color
-                    )
-
-        # Convert back to RGB before saving.
-        base_img = base_img.convert("RGB")
-        base_img.save(out_file)
-        print(f"RGB image saved to {out_file}")

@@ -6,7 +6,7 @@ import os
 from alg_parameters import *
 from mapf_gym import CL_MAPFEnv
 from model import Model
-from util import set_global_seeds,one_episode_perf,perf_dict_driver,update_perf
+from util import set_global_seeds,one_episode_perf,perf_dict_driver,update_perf, build_occupancy_grid
 
 
 class Runner(object):
@@ -41,9 +41,16 @@ class Runner(object):
         self.im_first_time=True
         
         # Create a unique output directory for this runner using its ID.
-        self.output_dir = os.path.join("test_images", f"env_{self.ID}")
-        os.makedirs(self.output_dir, exist_ok=True)
-        self.env.save_rgb_image(os.path.join(self.output_dir, "step_000.png"))
+        self.save_iteration_as_image(0)
+        
+    def save_iteration_as_image(self, iteration):
+        # Create (or reuse) the output directory:
+        output_dir = os.path.join("test_images", f"env_{self.ID}")
+        os.makedirs(output_dir, exist_ok=True)
+        # Use the iteration number in the file name:
+        filename = os.path.join(output_dir, f"step_{iteration:03d}.png")
+        self.env.save_rgb_image(filename)
+        print(f"Saved image for iteration {iteration} to {filename}")
 
     def rl_run(self, weights,cl_task_num,switch_task):
         """run multiple steps and collect data for reinforcement learning"""

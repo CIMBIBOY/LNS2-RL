@@ -67,3 +67,7 @@ virtualenv==20.26.2
 wandb==0.16.1
 wrapt==1.16.0
 yarl==1.9.4
+noise
+matplotlib
+catkin_pkg
+rospkg

@@ -13,7 +13,17 @@ public:
     vector<int> goal_locations;
     int num_of_agents;
 
+    // ✅ Store full dynamic map sequence [t][row][col]
+    std::vector<std::vector<std::vector<int>>> dynamic_map_seq;
+
 	Instance()=default;
+    /*
+    Instance(const std::vector<std::vector<std::vector<int>>>& grid_sequence,
+        const std::vector<std::pair<int, int>>& start_poss,
+        const std::vector<std::pair<int, int>>& goal_poss,
+        int num_of_agents, int num_of_rows);
+        */
+
     Instance(const vector<vector<int>>& obs_map, const vector<pair<int,int>>& start_poss, const vector<pair<int,int>>& goal_poss,int num_of_agents,int num_of_rows);
 
     inline bool validMove(int curr, int next) const
@@ -42,6 +52,9 @@ public:
 
     // Returns a constant reference to the map data.
     const vector<bool>& getMap() const { return my_map; }
+
+    // ✅ Check if a cell is a radar zone at a specific time
+    bool isRadarZone(int timestep, int row, int col) const;
     
 private:
 	  // int moves_offset[MOVE_COUNT];

@@ -4,17 +4,152 @@
 #include "common.h"
 #include <utility>
 
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/Image.h>
+#include <visualization_msgs/MarkerArray.h>
+#include <cstdlib>
+#include <unistd.h>
+
+/*
+MyLns2::MyLns2(int seed, vector<vector<vector<int>>> obs_map, vector<pair<int,int>> start_poss, vector<pair<int,int>> goal_poss, int all_ag_num, int map_size)
+    : instance(obs_map, start_poss, goal_poss, all_ag_num, map_size),
+      path_table(map_size * map_size, all_ag_num)
+*/
+      
 MyLns2::MyLns2(int seed, vector<vector<int>> obs_map,vector<pair<int,int>> start_poss, vector<pair<int,int>> goal_poss,int all_ag_num,int map_size):
-        instance(obs_map,start_poss,goal_poss,all_ag_num,map_size),path_table(map_size*map_size, all_ag_num)
+    instance(obs_map,start_poss,goal_poss,all_ag_num,map_size),path_table(map_size*map_size, all_ag_num),bag_recorder_pid(-1)  // Initialize bag recorder PID
 {
+    if (myros) {
+        ensure_ros_initialized();
+    
+        if (ros::isInitialized()) {
+            static ros::NodeHandle nh;
+            std::string env_suffix = std::to_string(seed);
+            std::string marker_topic = "/sipp/iteration_markers_" + env_suffix;
+    
+            marker_pub = nh.advertise<visualization_msgs::MarkerArray>(marker_topic, 1, true);
+    
+            // ✅ Only publish the first frame of dynamic map
+            publishMapImage(obs_map, instance.start_locations);
+    
+            // Start recording
+            std::string bag_filename = "/lns2rl/Ros/Bags/sipp_vis_" + env_suffix + ".bag";
+            startBagRecording(bag_filename, marker_topic);
+        }
+    }
+
     srand(seed);
-    agents.reserve(all_ag_num); //vector.reserve: adjust capacity
+    agents.reserve(all_ag_num);
     for (int i = 0; i < all_ag_num; i++)
-        agents.emplace_back(instance, i,instance.start_locations,instance.goal_locations);  //  add element to the last place
+        agents.emplace_back(instance, i, instance.start_locations, instance.goal_locations);
+}
+
+MyLns2::~MyLns2() {
+    if (myros) stopBagRecording();  // Clean up on destruction
+}
+
+void MyLns2::ensure_ros_initialized() {
+    if (!ros::isInitialized()) {
+        int argc = 0;
+        char **argv = nullptr;
+        ros::init(argc, argv, "lns2_pybind_node", ros::init_options::AnonymousName);
+        std::cout << "[ROS] ros::init() called with anonymous name\n";
+    }
+}
+
+void MyLns2::publishMapImage(const std::vector<std::vector<int>>& map,
+    const std::vector<int>& start_locations)
+{
+    visualization_msgs::MarkerArray marker_array;
+    int width = map[0].size();
+    int height = map.size();
+    int id = 0;
+
+    // (1) Base map cubes (same as before)...
+
+    // (2) Count start location overlaps
+    std::unordered_map<int, int> start_counts;
+    for (int loc : start_locations)
+    start_counts[loc]++;
+
+    for (const auto& [loc, count] : start_counts) {
+    int x = loc % width;
+    int y = loc / width;
+
+    visualization_msgs::Marker sphere;
+    sphere.header.frame_id = "map";
+    sphere.header.stamp = ros::Time::now();
+    sphere.ns = "agent_starts";
+    sphere.id = id++;
+    sphere.type = visualization_msgs::Marker::SPHERE;
+    sphere.action = visualization_msgs::Marker::ADD;
+    sphere.pose.position.x = x + 0.5;
+    sphere.pose.position.y = y + 0.5;
+    sphere.pose.position.z = 0.2;
+    sphere.scale.x = 0.4;
+    sphere.scale.y = 0.4;
+    sphere.scale.z = 0.4;
+    sphere.color.a = 1.0;
+
+    if (count > 1) {
+    sphere.color.r = 0.5;  // purple for overlapping
+    sphere.color.g = 0.0;
+    sphere.color.b = 0.5;
+    } else {
+    sphere.color.r = 0.0;  // green for unique
+    sphere.color.g = 1.0;
+    sphere.color.b = 0.0;
+    }
+
+    marker_array.markers.push_back(sphere);
+    }
+
+    marker_pub.publish(marker_array);
+    ros::spinOnce();
+    ros::Duration(0.05).sleep();
+}
+
+void MyLns2::startBagRecording(const std::string& filename, const std::string& topic) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        // Child process: setup safe ROS-only LD_LIBRARY_PATH
+        setenv("LD_LIBRARY_PATH", "/opt/ros/noetic/lib", 1);
+
+        execlp("rosbag", "rosbag", "record",
+            "--split",
+            "--size=4096",           // Correct argument: not "--max-bag-size"
+            "-O", filename.c_str(),
+            topic.c_str(),
+            (char*) nullptr);
+
+        std::cerr << "Failed to start rosbag record" << std::endl;
+        std::_Exit(1);
+    } else if (pid > 0) {
+        bag_recorder_pid = pid;
+        std::cout << "[ROS] rosbag record started (pid: " << bag_recorder_pid << ")" << std::endl;
+    } else {
+        std::cerr << "[ROS] Failed to fork rosbag record" << std::endl;
+    }
+}
+
+void MyLns2::stopBagRecording() {
+    if (bag_recorder_pid > 0) {
+        kill(bag_recorder_pid, SIGINT);  // sends Ctrl+C
+        std::cout << "[ROS] rosbag record stopped" << std::endl;
+    }
 }
 
 void MyLns2::init_pp()
 {
+    for (int i = 0; i < (int)agents.size(); i++) {
+        neighbor.agents.push_back(i);
+        auto* sipp_solver = dynamic_cast<SIPP*>(agents[i].path_planner);
+        if (sipp_solver) {
+            sipp_solver->marker_pub = marker_pub;
+        }
+    }
     neighbor.agents.reserve(agents.size());
     for (int i = 0; i < (int)agents.size(); i++)
         neighbor.agents.push_back(i);
@@ -118,6 +253,7 @@ int MyLns2::calculate_sipps(vector<int> new_agents)
     {
         int id = *p;
         agents[id].path = agents[id].path_planner->findPath(constraint_table);
+        
         if (agents[id].path.empty()) {
             std::cout << "Warning: No path found for agent " << id << ". Using fallback strategy." << std::endl;
             

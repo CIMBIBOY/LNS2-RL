@@ -1,7 +1,0 @@
-id is:fj6c0tod
-Launching wandb...
-[36m(RLRunner pid=695385)[39m RGB image saved to test_images/env_16/step_000.png
-[36m(RLRunner pid=694890)[39m RGB image saved to test_images/env_3/step_000.png[32m [repeated 7x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)
-Saving Model !
-CTRL-C pressed. killing remote workers
-Saving Final Model !

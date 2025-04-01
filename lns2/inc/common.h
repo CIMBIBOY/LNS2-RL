@@ -13,6 +13,9 @@
 #include <boost/heap/pairing_heap.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/unordered_map.hpp>
+#include <visualization_msgs/Marker.h>  // ✅ This must come before using visualization_msgs types
+#include <string>
+
 
 using boost::heap::pairing_heap;
 using boost::heap::compare;
@@ -54,4 +57,11 @@ struct PathEntry
 typedef vector<PathEntry> Path;
 std::ostream& operator<<(std::ostream& os, const Path& path);
 
-
+visualization_msgs::Marker makeMarker(
+    int x, int y,
+    float r = 1.0, float g = 1.0, float b = 1.0,
+    const std::string& ns = "default",
+    float scale_xy = 0.3,
+    float scale_z = 0.1,
+    float z_offset = 0.05,
+    int id = -1);

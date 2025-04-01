@@ -11,7 +11,7 @@ class EnvParameters:
     #    global_num_agent = round(random.choice(GLOBAL_N_AGENT_LIST[cl_num_task]) * grid_area)
     # For a 64x64 grid, grid_area = 4096.
     # To get exactly 5 agents, use the ratio 5/4096.
-    GLOBAL_N_AGENT_LIST= [(0.01, 0.02, 0.03)] # [(0.4,0.45,0.5),(0.5,0.55,0.6),(0.6,0.65,0.7)]
+    GLOBAL_N_AGENT_LIST= [(0.001, 0.002, 0.003)] # [(0.4,0.45,0.5),(0.5,0.55,0.6),(0.6,0.65,0.7)]
     
     N_ACTIONS = 5  # Number of discrete actions available.
     EPISODE_LEN = [356, 356, 356] # Episode length (number of timesteps per episode) for each curriculum level.
@@ -57,7 +57,7 @@ class TrainingParameters:
     POLICY_COEF = 1
     VALID_COEF = 0.5
     N_EPOCHS = 10
-    N_ENVS = 16 # number of processes  # original: 32
+    N_ENVS = 1 # 6 # number of processes  # original: 32
     N_MAX_STEPS = 7e7  # maximum number of time steps used in training
     N_STEPS = 2 ** 8  # number of time steps per process per data collection
     MINIBATCH_SIZE =int(2**9)

@@ -1,0 +1,6 @@
+nav_msgs/OccupancyGrid map
+geometry_msgs/PoseArray starts
+geometry_msgs/PoseArray goals
+int32 num_agents
+---
+geometry_msgs/PoseArray[] paths  # Each agent's full trajectory

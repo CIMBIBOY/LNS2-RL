@@ -5,6 +5,10 @@ import torch
 import wandb
 from alg_parameters import *
 
+import rospy
+from nav_msgs.msg import OccupancyGrid
+from geometry_msgs.msg import Pose
+
 
 def set_global_seeds(i):
     """set seed for fair comparison"""
@@ -77,3 +81,23 @@ def one_episode_perf():
                         'num_dynamic_collide': 0, "num_agent_collide": 0,"final_goals":0,"diff_collide":0,
                         "real_reward":0,"team_better":0,"num_collide":0}
     return one_episode_perf
+
+
+def build_occupancy_grid(effective_map, resolution=1.0, origin=(0, 0)):
+    grid_msg = OccupancyGrid()
+    grid_msg.header = Header()
+    grid_msg.header.stamp = rospy.Time.now()
+    grid_msg.header.frame_id = "map"
+
+    grid_msg.info.resolution = resolution
+    grid_msg.info.width = effective_map.shape[1]
+    grid_msg.info.height = effective_map.shape[0]
+    grid_msg.info.origin.position.x = origin[0]
+    grid_msg.info.origin.position.y = origin[1]
+    grid_msg.info.origin.position.z = 0
+
+    # Flatten row-major and replace values (-1=obstacle, 0=free, 100=dynamic obstacle, etc.)
+    data = effective_map.flatten().astype(np.int8)
+    grid_msg.data = list(data)
+
+    return grid_msg

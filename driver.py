@@ -12,10 +12,13 @@ from model import Model
 from runner import RLRunner
 from util import set_global_seeds, write_to_wandb, perf_dict_driver,write_to_wandb_im
 
+import rospy
+from nav_msgs.msg import OccupancyGrid
+from visualization_msgs.msg import MarkerArray
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 ray.init(num_gpus=SetupParameters.NUM_GPU)
 print("Welcome to Dynamic MAPF!\n")
-
 
 def main():
     """main code"""
@@ -195,7 +198,12 @@ def main():
                                   "episode": curr_episodes,
                                   "im_step": im_steps}
                 torch.save(net_checkpoint, path_checkpoint)
-
+                
+            # Call the save function for each environment (if using Ray, do it remotely):
+            futures = [env.save_iteration_as_image.remote(curr_steps) for env in envs]
+            ray.get(futures)
+            
+            
     except KeyboardInterrupt:
         print("CTRL-C pressed. killing remote workers")
     finally:
