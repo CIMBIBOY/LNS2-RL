@@ -3,9 +3,11 @@
 // #include <opencv2/opencv.hpp>
 #include "SingleAgentSolver.h"
 #include "ReservationTable.h"
-#include <ros/ros.h>  // ← required for ros::Publisher
 #include <cstdlib>
 #include <unistd.h>
+
+// 🔁 Replace ROS with Rerun
+#include <rerun.hpp>
 
 class SIPPNode: public LLNode
 {
@@ -77,8 +79,7 @@ public:
     Path findPath(const ConstraintTable& constraint_table); // return A path that minimizes collisions, breaking ties by cost
 	// New visualization routine:
 	// Add this to the SIPP class definition
-	ros::Publisher marker_pub;
-    void rosVisualization(int iteration, const Path& path); // <- updated
+	void rerunVisualization(int iteration, const Path& path);
 	// Data members used in visualization (you may adjust these as needed):
     // "instance" is already available from SingleAgentSolver (if not, include it here)
     // Here we add a simple structure for world if not already defined.
@@ -98,8 +99,8 @@ public:
 	SIPP(const Instance& instance, int agent,const vector<int>& start_locations,const vector<int>& goal_locations):
 		SingleAgentSolver(instance, agent,start_locations,goal_locations) {}
 
-	pid_t bag_recorder_pid = -1;
-	bool myros = true;  // Set to true when ROS visualization should be active
+	// Visualization flags
+    bool use_rerun = true;
 
 private:
 	// define typedefs and handles for heap

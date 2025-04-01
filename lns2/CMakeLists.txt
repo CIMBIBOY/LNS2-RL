@@ -10,33 +10,22 @@ ENDIF()
 include_directories("inc")
 
 find_package(Boost REQUIRED COMPONENTS program_options system filesystem)
-include_directories( ${Boost_INCLUDE_DIRS} )
+include_directories(${Boost_INCLUDE_DIRS})
 
-# Find and include OpenCV
+# OpenCV for optional image saving/debugging
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-# Find and include ROS packages
-find_package(catkin REQUIRED COMPONENTS
-    roscpp
-    nav_msgs
-    std_msgs
-    geometry_msgs
-    visualization_msgs
-    cv_bridge
-    sensor_msgs 
-)
-
-include_directories(
-    ${catkin_INCLUDE_DIRS}
-)
+# 🔁 Rerun (static or shared build expected)
+# Replace this path with your actual rerun-cpp install path
+include_directories(/usr/local/include/rerun)
+link_directories(/usr/local/lib)
 
 add_subdirectory(pybind11)
 pybind11_add_module(my_lns2 main.cpp)
-target_link_libraries(my_lns2 PRIVATE ${Boost_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(my_lns2 PRIVATE ${Boost_LIBRARIES} ${OpenCV_LIBS} rerun_cpp)
 
 add_executable(mylns2_tester mylns2_tester.cpp
                Instance.cpp ConstraintTable.cpp PathTable.cpp ReservationTable.cpp
                SIPP.cpp SingleAgentSolver.cpp common.cpp mylns2.cpp)
-
-target_link_libraries(mylns2_tester PRIVATE ${Boost_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(mylns2_tester PRIVATE ${Boost_LIBRARIES} ${OpenCV_LIBS} rerun_cpp)
